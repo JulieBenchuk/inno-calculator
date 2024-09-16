@@ -1,9 +1,10 @@
-import './styles.css';
+import './styles/styles.css';
+import calculate from './utils/calculate';
+import formatNumber from './utils/formatNumber';
+import { MAX_LENGTH } from './utils/constants';
 
 const display = document.querySelector('.display');
 const keys = document.querySelector('.keys');
-
-const MAX_LENGTH = 14;
 
 let currentValue = '0';
 let previousValue = '';
@@ -26,66 +27,35 @@ keys.addEventListener('click', (event) => {
       : `-${currentValue}`;
   } else if (buttonText === '%') {
     currentValue = String(parseFloat(currentValue) / 100);
-    currentValue = formatNumber(currentValue);
   } else if (['+', '-', '×', '÷'].includes(buttonText)) {
     if (previousValue && operator) {
-      calculate();
+      currentValue = calculate(
+        parseFloat(previousValue),
+        parseFloat(currentValue),
+        operator,
+      );
     }
     operator = buttonText;
     previousValue = currentValue;
     currentValue = '0';
   } else if (buttonText === '=') {
     if (previousValue && operator) {
-      calculate();
+      currentValue = calculate(
+        parseFloat(previousValue),
+        parseFloat(currentValue),
+        operator,
+      );
+      currentValue = formatNumber(currentValue);
       operator = '';
       previousValue = '';
     }
   } else {
     if (currentValue === '0' && buttonText !== '.') {
       currentValue = buttonText;
-    } else {
-      if (currentValue.length < MAX_LENGTH) {
-        currentValue += buttonText;
-        if (currentValue.length > MAX_LENGTH) {
-          currentValue = currentValue.slice(0, MAX_LENGTH);
-        }
-      }
+    } else if (currentValue.length < MAX_LENGTH) {
+      currentValue += buttonText;
     }
   }
 
   display.textContent = currentValue;
 });
-
-function calculate() {
-  const prev = parseFloat(previousValue);
-  const curr = parseFloat(currentValue);
-
-  let result;
-
-  switch (operator) {
-    case '+':
-      result = prev + curr;
-      break;
-    case '-':
-      result = prev - curr;
-      break;
-    case '×':
-      result = prev * curr;
-      break;
-    case '÷':
-      result = prev / curr;
-      break;
-    default:
-      return;
-  }
-
-  currentValue = formatNumber(result);
-}
-
-function formatNumber(num) {
-  const formatted = num.toString().slice(0, MAX_LENGTH);
-
-  return formatted.length > MAX_LENGTH
-    ? formatted.slice(0, MAX_LENGTH)
-    : formatted;
-}
