@@ -1,4 +1,5 @@
 const path = require('path');
+const htmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -22,7 +23,16 @@ module.exports = {
     ],
   },
   devServer: {
-    contentBase: './dist',
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: 3000,
   },
-  mode: 'production',
+  plugins: [
+    new htmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+  ],
+  mode: 'development',
 };
