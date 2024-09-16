@@ -31,7 +31,7 @@ module.exports = {
   },
   plugins: [
     new htmlWebpackPlugin({
-      template: './src/index.html',
+      template: './src/components/calculator.html',
     }),
   ],
   mode: 'development',
