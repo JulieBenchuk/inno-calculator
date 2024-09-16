@@ -1,0 +1,12 @@
+# Node.js dependencies
+node_modules/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# use npm
+package-lock.json
