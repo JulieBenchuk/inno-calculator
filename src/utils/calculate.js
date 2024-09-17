@@ -1,4 +1,5 @@
 import { MAX_LENGTH, OVERFLOW_MESSAGE } from './constants';
+import { validateResult } from './validateResult';
 
 export default function calculate(prev, curr, operator) {
   const previousValue = parseFloat(prev);
@@ -27,8 +28,6 @@ export default function calculate(prev, curr, operator) {
     .replace(/\.?0+$/, '');
 
   if (formattedResult.length > MAX_LENGTH) {
-    return OVERFLOW_MESSAGE;
-  }
-
-  return formattedResult;
+    return { isValid: false, message: OVERFLOW_MESSAGE };
+  } else return validateResult(formattedResult);
 }

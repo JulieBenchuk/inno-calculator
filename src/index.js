@@ -1,6 +1,7 @@
 import './styles/styles.css';
 import calculate from './utils/calculate';
-import { MAX_LENGTH, NAN_MESSAGE, OVERFLOW_MESSAGE } from './utils/constants';
+import { validateResult } from './utils/validateResult';
+import { MAX_LENGTH } from './utils/constants';
 
 const display = document.querySelector('.display');
 const keys = document.querySelector('.keys');
@@ -9,6 +10,51 @@ let currentValue = '0';
 let previousValue = '';
 let operator = '';
 
+function handleOperation(buttonText) {
+  if (previousValue && operator) {
+    const result = calculate(previousValue, currentValue, operator);
+    currentValue = result.message;
+  }
+
+  operator = buttonText;
+  previousValue = currentValue;
+  currentValue = '0';
+}
+
+function handlePlusMinus() {
+  if (currentValue === '0') return;
+  currentValue = currentValue.startsWith('-')
+    ? currentValue.slice(1)
+    : `-${currentValue}`;
+}
+
+function handleEquals() {
+  if (previousValue && operator) {
+    const result = calculate(previousValue, currentValue, operator);
+
+    currentValue = result.message;
+    previousValue = '';
+    operator = '';
+  }
+}
+
+function handleNumberInput(buttonText) {
+  if (buttonText === '.') {
+    if (!currentValue.includes('.')) {
+      currentValue += '.';
+    }
+  } else if (currentValue.length < MAX_LENGTH) {
+    currentValue =
+      currentValue === '0' ? buttonText : currentValue + buttonText;
+  }
+}
+
+function resetCalculator() {
+  currentValue = '0';
+  previousValue = '';
+  operator = '';
+}
+
 keys.addEventListener('click', (event) => {
   const target = event.target;
 
@@ -16,56 +62,31 @@ keys.addEventListener('click', (event) => {
 
   const buttonText = target.textContent;
 
-  if (buttonText === 'AC') {
-    currentValue = '0';
-    previousValue = '';
-    operator = '';
-  } else if (buttonText === '+/-') {
-    currentValue = currentValue.startsWith('-')
-      ? currentValue.slice(1)
-      : `-${currentValue}`;
-  } else if (buttonText === '%') {
-    currentValue = String(parseFloat(currentValue) / 100);
-  } else if (['+', '-', '×', '÷'].includes(buttonText)) {
-    if (previousValue && operator) {
-      const result = calculate(previousValue, currentValue, operator);
-      if (result === OVERFLOW_MESSAGE || result === 'NaN') {
-        display.textContent =
-          result === OVERFLOW_MESSAGE ? OVERFLOW_MESSAGE : NAN_MESSAGE;
-        currentValue = '0';
-        previousValue = '';
-        operator = '';
-        return;
-      }
-      currentValue = result;
-    }
-    operator = buttonText;
-    previousValue = currentValue;
-    currentValue = '0';
-  } else if (buttonText === '=') {
-    if (previousValue && operator) {
-      const result = calculate(previousValue, currentValue, operator);
-      if (result === OVERFLOW_MESSAGE || result === 'NaN') {
-        display.textContent =
-          result === OVERFLOW_MESSAGE ? OVERFLOW_MESSAGE : NAN_MESSAGE;
-        currentValue = '0';
-        previousValue = '';
-        operator = '';
-        return;
-      }
-      currentValue = result;
-      previousValue = result;
-      operator = '';
-    }
-  } else {
-    if (buttonText === '.') {
-      if (!currentValue.includes('.')) {
-        currentValue += '.';
-      }
-    } else if (currentValue.length < MAX_LENGTH) {
-      currentValue =
-        currentValue === '0' ? buttonText : currentValue + buttonText;
-    }
+  if (!validateResult(currentValue).isValid) {
+    resetCalculator();
+  }
+
+  switch (buttonText) {
+    case 'AC':
+      resetCalculator();
+      break;
+    case '+/-':
+      handlePlusMinus();
+      break;
+    case '%':
+      currentValue = String(parseFloat(currentValue) / 100);
+      break;
+    case '+':
+    case '-':
+    case '×':
+    case '÷':
+      handleOperation(buttonText);
+      break;
+    case '=':
+      handleEquals();
+      break;
+    default:
+      handleNumberInput(buttonText);
   }
 
   display.textContent = currentValue;
