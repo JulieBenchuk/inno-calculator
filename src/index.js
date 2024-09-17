@@ -1,7 +1,6 @@
 import './styles/styles.css';
 import calculate from './utils/calculate';
-import formatNumber from './utils/formatNumber';
-import { MAX_LENGTH } from './utils/constants';
+import { MAX_LENGTH, NAN_MESSAGE, OVERFLOW_MESSAGE } from './utils/constants';
 
 const display = document.querySelector('.display');
 const keys = document.querySelector('.keys');
@@ -29,31 +28,43 @@ keys.addEventListener('click', (event) => {
     currentValue = String(parseFloat(currentValue) / 100);
   } else if (['+', '-', '×', '÷'].includes(buttonText)) {
     if (previousValue && operator) {
-      currentValue = calculate(
-        parseFloat(previousValue),
-        parseFloat(currentValue),
-        operator,
-      );
+      const result = calculate(previousValue, currentValue, operator);
+      if (result === OVERFLOW_MESSAGE || result === 'NaN') {
+        display.textContent =
+          result === OVERFLOW_MESSAGE ? OVERFLOW_MESSAGE : NAN_MESSAGE;
+        currentValue = '0';
+        previousValue = '';
+        operator = '';
+        return;
+      }
+      currentValue = result;
     }
     operator = buttonText;
     previousValue = currentValue;
     currentValue = '0';
   } else if (buttonText === '=') {
     if (previousValue && operator) {
-      currentValue = calculate(
-        parseFloat(previousValue),
-        parseFloat(currentValue),
-        operator,
-      );
-      currentValue = formatNumber(currentValue);
+      const result = calculate(previousValue, currentValue, operator);
+      if (result === OVERFLOW_MESSAGE || result === 'NaN') {
+        display.textContent =
+          result === OVERFLOW_MESSAGE ? OVERFLOW_MESSAGE : NAN_MESSAGE;
+        currentValue = '0';
+        previousValue = '';
+        operator = '';
+        return;
+      }
+      currentValue = result;
+      previousValue = result;
       operator = '';
-      previousValue = '';
     }
   } else {
-    if (currentValue === '0' && buttonText !== '.') {
-      currentValue = buttonText;
+    if (buttonText === '.') {
+      if (!currentValue.includes('.')) {
+        currentValue += '.';
+      }
     } else if (currentValue.length < MAX_LENGTH) {
-      currentValue += buttonText;
+      currentValue =
+        currentValue === '0' ? buttonText : currentValue + buttonText;
     }
   }
 
