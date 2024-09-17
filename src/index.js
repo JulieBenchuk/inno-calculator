@@ -49,6 +49,16 @@ function handleNumberInput(buttonText) {
   }
 }
 
+function handlePercentage() {
+  if (previousValue && operator) {
+    currentValue = String(
+      (parseFloat(previousValue) * parseFloat(currentValue)) / 100,
+    );
+  } else {
+    currentValue = String(parseFloat(currentValue) / 100);
+  }
+}
+
 function resetCalculator() {
   currentValue = '0';
   previousValue = '';
@@ -74,7 +84,7 @@ keys.addEventListener('click', (event) => {
       handlePlusMinus();
       break;
     case '%':
-      currentValue = String(parseFloat(currentValue) / 100);
+      handlePercentage();
       break;
     case '+':
     case '-':
