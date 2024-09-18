@@ -1,20 +1,21 @@
-import { ERROR, OVERFLOW_MESSAGE } from './constants';
+import { ERROR, OVERFLOW_MESSAGE } from '../constants/constants';
 
-export function validateResult(result) {
+export default function validateResult(result) {
+  const invalidResults = ['NaN', 'Infinity', '-Infinity'];
+
   if (result === OVERFLOW_MESSAGE || result === ERROR) {
     return {
       isValid: false,
       message: result,
     };
-  } else if (
-    result === 'NaN' ||
-    result === 'Infinity' ||
-    result === '-Infinity'
-  ) {
+  }
+
+  if (invalidResults.includes(result)) {
     return {
       isValid: false,
       message: ERROR,
     };
   }
+
   return { isValid: true, message: result };
 }

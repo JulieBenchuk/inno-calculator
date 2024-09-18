@@ -1,7 +1,8 @@
 import '../styles/calculator.css';
 import calculate from '../utils/calculate';
-import { validateResult } from '../utils/validateResult';
-import { MAX_LENGTH } from '../utils/constants';
+import countPercent from '../utils/countPercent';
+import validateResult from '../utils/validateResult';
+import { MAX_LENGTH } from '../constants/constants';
 
 const display = document.querySelector('.display');
 const keys = document.querySelector('.keys');
@@ -33,8 +34,7 @@ function handleEquals() {
     const result = calculate(previousValue, currentValue, operator);
 
     currentValue = result.message;
-    previousValue = '';
-    operator = '';
+    resetPrevAndOperator();
   }
 }
 
@@ -50,17 +50,16 @@ function handleNumberInput(buttonText) {
 }
 
 function handlePercentage() {
-  if (previousValue && operator) {
-    currentValue = String(
-      (parseFloat(previousValue) * parseFloat(currentValue)) / 100,
-    );
-  } else {
-    currentValue = String(parseFloat(currentValue) / 100);
-  }
+  currentValue = countPercent(previousValue, currentValue, operator);
+  resetPrevAndOperator();
 }
 
 function resetCalculator() {
   currentValue = '0';
+  resetPrevAndOperator();
+}
+
+function resetPrevAndOperator() {
   previousValue = '';
   operator = '';
 }
