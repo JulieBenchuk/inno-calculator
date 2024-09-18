@@ -23,9 +23,6 @@ module.exports = {
       },
     ],
   },
-  optimization: {
-    minimize: true,
-  },
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
@@ -36,6 +33,7 @@ module.exports = {
   plugins: [
     new htmlWebpackPlugin({
       template: './src/index.html',
+      inject: 'body',
     }),
   ],
   mode: 'production',
