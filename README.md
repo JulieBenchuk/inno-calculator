@@ -27,10 +27,12 @@ This is a simple calculator application built with JavaScript and Webpack. The i
   Contains the main source files for the project.
     - **components/**  
       Contains `calculator.js` and `switcher.js`, which handle the logic for the calculator and the theme switcher functionality.
+    - **constants/**   
+      Constants used in the app.
     - **styles/**  
       Includes the styles for the calculator.
     - **utils/**  
-      Includes the functions for calculation, validation, and constants used in the app.
+      Includes the functions for calculation, formatting and validation.
     - **index.js**  
       The entry file for the application that contains the logic for handling the calculator's functionality and interactions.
     - **index.html**  
