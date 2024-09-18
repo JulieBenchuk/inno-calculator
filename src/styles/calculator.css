@@ -1,12 +1,16 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+:root {
+    --primary-color: orange;
 }
 
 .red { background-color: #ff5f57; }
 .yellow { background-color: #ffbd44; }
 .green { background-color: #28c841; }
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
 
 .calculator {
     width: 300px;
@@ -68,10 +72,15 @@ body, html {
     grid-column: span 2;
 }
 
-.key.orange {
-    background-color: #ff9500;
-}
-
 .key:hover {
     background-color: #555;
+}
+
+.key.primary {
+    background-color: var(--primary-color);
+}
+
+.key.primary:hover {
+    background-color: var(--primary-color);
+    opacity: 0.9;
 }
